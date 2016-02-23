@@ -5,11 +5,19 @@
 #include <string.h>
 
 #define v_assert(expression) \
-	if (!(expression)) {\
-		printf("Failed:\tFILE(%s), LINE(%d), Expression(%s)\n", __FILE__, __LINE__, #expression); exit(1);}
+	do { \
+		if (!(expression)) {\
+			printf("Failed:\tFILE(%s), LINE(%d), Expression(%s)\n", __FILE__, __LINE__, #expression); \
+			exit(1); \
+		} \
+	} while (0)
 
 #define v_assert_str(expected, actual) \
-	if (strcmp((expected), (actual)) != 0) {\
-		printf("Failed:\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); exit(1);}
+	do { \
+		if (strcmp((expected), (actual)) != 0) {\
+			printf("Failed:\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); \
+			exit(1);\
+		}\
+	} while (0)
 
 #endif
