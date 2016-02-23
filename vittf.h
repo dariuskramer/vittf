@@ -20,4 +20,7 @@
 		}\
 	} while (0)
 
+#define v_test_success(name) printf("%s ✓\n", (name))
+#define v_suite_success printf("\n\n=========\nFULL TEST ✓\n")
+
 #endif
