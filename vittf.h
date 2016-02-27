@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #define v_assert(expression) \
 	do { \
@@ -23,5 +24,63 @@
 #define v_test_success(name) (printf("%s ✓\n", (name)))
 #define v_suite_success(suite) (printf("---> Suite %s ✓\n\n", (suite)))
 #define v_full_success(test) (printf("=========\nFULL TEST FOR %s ✓\n", (test)))
+
+/*
+ * Stdout Redirection
+ *
+ * - Créer une référence supplémentaire vers le FILE de stdout
+ *		Les objets pointés par les référence ne sont pas distinguable
+ *
+ * [0] => connect to the read end of the pipe (output)
+ * [1] => connect to the write end of the pipe (input)
+ * Les données écrite dans [1] peuvent etre lues dans [0]
+ * Le pipe est actif tant que les 2 fds ne sont pas clos
+ *
+ * Le fd 1 étant déjà occupé, dup2() le clos.
+ * Ensuite dup2() duplique la référence vers l'input du pipe en utilisant
+ * le second parametre envoyé, a savoir 1
+ */
+static int	v_stdout_ref;
+static int	v_pipe_redirect[2];
+static int	v_read_return;
+
+#define REDIRECT_STDOUT_SETUP \
+	do { \
+		setvbuf(stdout, NULL, _IONBF, BUFSIZ); \
+		v_stdout_ref = dup(1); \
+		if ((pipe(v_pipe_redirect)) == -1) {\
+			fprintf(stderr, "Pipe() error !\n"); \
+			exit(10); \
+		}\
+		if ((dup2(v_pipe_redirect[1], 1)) == -1) {\
+			fprintf(stderr, "Dup2() error !\n"); \
+			exit(11); \
+		}\
+	} while (0)
+
+#define REDIRECT_STDOUT_READ(v_buffer, v_buffer_size) \
+	do { \
+		if ((dup2(v_stdout_ref, 1)) == -1) {\
+			fprintf(stderr, "Dup2() error !\n"); \
+			exit(13); \
+		}\
+		v_read_return = read(v_pipe_redirect[0], v_buffer, v_buffer_size); \
+		if (v_read_return == -1) {\
+			fprintf(stderr, "Read() error !\n"); \
+			exit(12); \
+		}\
+		v_buffer[v_read_return] = '\0';\
+	} while (0)
+
+#define REDIRECT_STDOUT_TEARDOWN \
+	do { \
+		if ((dup2(v_stdout_ref, 1)) == -1) {\
+			fprintf(stderr, "Dup2() error !\n"); \
+			exit(13); \
+		}\
+		close(v_pipe_redirect[0]); \
+		close(v_pipe_redirect[1]); \
+		close(v_stdout_ref); \
+	} while (0)
 
 #endif
