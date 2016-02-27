@@ -44,7 +44,7 @@ static int	v_stdout_ref;
 static int	v_pipe_redirect[2];
 static int	v_read_return;
 
-#define REDIRECT_STDOUT_SETUP \
+#define V_REDIRECT_STDOUT_SETUP \
 	do { \
 		setvbuf(stdout, NULL, _IONBF, BUFSIZ); \
 		v_stdout_ref = dup(1); \
@@ -58,7 +58,7 @@ static int	v_read_return;
 		}\
 	} while (0)
 
-#define REDIRECT_STDOUT_READ(v_buffer, v_buffer_size) \
+#define V_REDIRECT_STDOUT_READ(v_buffer, v_buffer_size) \
 	do { \
 		if ((dup2(v_stdout_ref, 1)) == -1) {\
 			fprintf(stderr, "Dup2() error !\n"); \
@@ -72,7 +72,7 @@ static int	v_read_return;
 		v_buffer[v_read_return] = '\0';\
 	} while (0)
 
-#define REDIRECT_STDOUT_TEARDOWN \
+#define V_REDIRECT_STDOUT_TEARDOWN \
 	do { \
 		if ((dup2(v_stdout_ref, 1)) == -1) {\
 			fprintf(stderr, "Dup2() error !\n"); \
