@@ -21,9 +21,26 @@
 		}\
 	} while (0)
 
-#define v_test_success(name) (printf("%s ✓\n", (name)))
-#define v_suite_success(suite) (printf("---> Suite %s ✓\n\n", (suite)))
-#define v_full_success(test) (printf("=========\n\x1b[32mFULL TEST FOR %s ✓\x1b[0m\n", (test)))
+#define v_assert_pass(expression) \
+	do { \
+		if (!(expression)) {\
+			printf("\x1b[41mFailed >>>\x1b[0m FILE(%s), LINE(%d), Expression(%s)\n", __FILE__, __LINE__, #expression); \
+		} \
+	} while (0)
+
+#define v_assert_pass_str(expected, actual) \
+	do { \
+		if (strcmp((expected), (actual)) != 0) {\
+			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); \
+		}\
+	} while (0)
+
+#define v_test_success(name) \
+	(printf("%s ✓\n", (name)))
+#define v_suite_success(suite) \
+	(printf("---> Suite %s ✓\n\n", (suite)))
+#define v_full_success(test) \
+	(printf("=========\n\x1b[32mFULL TEST FOR %s ✓\x1b[0m\n", (test)))
 
 /*
  * Stdout Redirection
