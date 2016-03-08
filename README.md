@@ -1,5 +1,10 @@
 # Vittf Is a Tiny Test Framework
 
+## Todo
+* Redirect stderr too, not just stdout
+* `_pass` behavior by default ?
+* print the values in a failed test
+
 ## Assertions
 * `v_assert(expression)`
 * `v_assert_str(expected, actual)`
