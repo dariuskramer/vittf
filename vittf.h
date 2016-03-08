@@ -77,11 +77,7 @@ static int	v_read_return;
 
 #define V_REDIRECT_STDOUT_READ(v_buffer, v_buffer_size) \
 	do { \
-		if ((dup2(v_stdout_ref, 1)) == -1) {\
-			fprintf(stderr, "Dup2() error !\n"); \
-			exit(13); \
-		}\
-		v_read_return = read(v_pipe_redirect[0], v_buffer, v_buffer_size); \
+		v_read_return = read(v_pipe_redirect[0], v_buffer, v_buffer_size - 1); \
 		if (v_read_return == -1) {\
 			fprintf(stderr, "Read() error !\n"); \
 			exit(12); \
