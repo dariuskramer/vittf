@@ -1,5 +1,11 @@
 # Vittf Is a Tiny Test Framework
 
+## Assertions
+* `v_assert(expression)`
+* `v_assert_str(expected, actual)`
+* `v_assert_pass(expression)`
+* `v_assert_str_pass(expected, actual)`
+
 ## Sources
 * [TinyTest](https://github.com/joewalnes/tinytest)
 * [Moulitest](https://github.com/yyang42/moulitest)

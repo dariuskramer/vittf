@@ -28,7 +28,7 @@
 		} \
 	} while (0)
 
-#define v_assert_pass_str(expected, actual) \
+#define v_assert_str_pass(expected, actual) \
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
 			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); \
