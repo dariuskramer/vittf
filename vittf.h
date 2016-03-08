@@ -98,6 +98,7 @@ static int	v_read_return;
 		close(v_pipe_redirect[0]); \
 		close(v_pipe_redirect[1]); \
 		close(v_stdout_ref); \
+		setlinebuf(stdout); \
 	} while (0)
 
 #endif
