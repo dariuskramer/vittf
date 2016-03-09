@@ -16,7 +16,8 @@
 #define v_assert_str(expected, actual) \
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
-			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); \
+			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), TEST(%s)\n" \
+					"\tExpression >>> (Expected) %s \x1b[1m\x1b[35m!=\x1b[0m %s (Actual)\n", __FILE__, __LINE__, __func__, (expected), (actual)); \
 			exit(1);\
 		}\
 	} while (0)
