@@ -5,6 +5,27 @@
 #include <string.h>
 #include <unistd.h>
 
+/*
+ * Assertions
+ */
+#define v_assert_type(fmt, expected, op, actual) \
+	do { \
+		if (!(expected op actual)) { \
+			PRINTF_FAILED; \
+			printf("\n\tEXPRESSION\t>>> " #expected " " #op " " #actual); \
+			printf("\n\tVALUES\t\t>>> " fmt " " #op " " fmt, (expected), (actual)); \
+			printf("\n"); \
+			exit(1); \
+		} \
+	} while (0)
+
+#define v_assert_int(expected, op, actual) \
+	v_assert_type("%d", expected, op, actual)
+#define v_assert_long(expected, op, actual) \
+	v_assert_type("%ld", expected, op, actual)
+#define v_assert_size_t(expected, op, actual) \
+	v_assert_type("%zu", expected, op, actual)
+
 #define v_assert(expression) \
 	do { \
 		if (!(expression)) {\
