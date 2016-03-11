@@ -6,6 +6,23 @@
 #include <unistd.h>
 
 /*
+ * Colors
+ */
+#define COLOR_RESET	"\x1b[0m"
+#define BG_RED		"\x1b[41m"
+#define FG_BLUE		"\x1b[34m"
+#define FG_GREEN	"\x1b[32m"
+
+/*
+ * Strings
+ */
+#define FAILED_STR		printf(BG_RED "FAILED !!!\t" COLOR_RESET)
+#define FAILED_FILE		printf("FILE(%s)", __FILE__)
+#define FAILED_LINE		printf(" | LINE(%d)", __LINE__)
+#define FAILED_FUNCTION	printf(" | FUNCTION(%s)", __func__)
+#define PRINTF_FAILED	FAILED_STR; FAILED_FILE; FAILED_LINE; FAILED_FUNCTION;
+
+/*
  * Assertions
  */
 #define v_assert_type(fmt, expected, op, actual) \
