@@ -56,7 +56,7 @@
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
 			PRINTF_FAILED; \
-			printf("\n\tExpression >>> (Expected) %s != %s (Actual)\n", (expected), (actual)); \
+			printf("\n\tStrcmp >>>\n\tExpected\t--> [%s]\n\tActual\t\t--> [%s]\n", (expected), (actual)); \
 			exit(1);\
 		}\
 	} while (0)
