@@ -46,7 +46,8 @@
 #define v_assert(expression) \
 	do { \
 		if (!(expression)) {\
-			printf("\x1b[41mFailed >>>\x1b[0m FILE(%s), LINE(%d), Expression(%s)\n", __FILE__, __LINE__, #expression); \
+			PRINTF_FAILED; \
+			printf("\n\tExpression(%s)\n", #expression); \
 			exit(1); \
 		} \
 	} while (0)
@@ -54,8 +55,8 @@
 #define v_assert_str(expected, actual) \
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
-			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), TEST(%s)\n" \
-					"\tExpression >>> (Expected) %s \x1b[1m\x1b[35m!=\x1b[0m %s (Actual)\n", __FILE__, __LINE__, __func__, (expected), (actual)); \
+			PRINTF_FAILED; \
+			printf("\n\tExpression >>> (Expected) %s != %s (Actual)\n", (expected), (actual)); \
 			exit(1);\
 		}\
 	} while (0)
@@ -63,14 +64,16 @@
 #define v_assert_pass(expression) \
 	do { \
 		if (!(expression)) {\
-			printf("\x1b[41mFailed >>>\x1b[0m FILE(%s), LINE(%d), Expression(%s)\n", __FILE__, __LINE__, #expression); \
+			PRINTF_FAILED; \
+			printf("\n\tExpression(%s)\n", #expression); \
 		} \
 	} while (0)
 
 #define v_assert_str_pass(expected, actual) \
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
-			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); \
+			PRINTF_FAILED; \
+			printf("\n\tExpression >>> (Expected) %s != %s (Actual)\n", (expected), (actual)); \
 		}\
 	} while (0)
 
