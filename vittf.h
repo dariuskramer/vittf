@@ -83,6 +83,8 @@
 	(printf("---> Suite %s ✓\n\n", (suite)))
 #define v_full_success(test) \
 	(printf("=========\n\x1b[32mFULL TEST FOR %s ✓\x1b[0m\n", (test)))
+#define VTS v_test_success(__func__)
+#define VSS v_suite_success(__func__)
 
 /*
  * Stdout Redirection
