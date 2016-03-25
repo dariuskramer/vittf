@@ -38,6 +38,8 @@
 
 #define v_assert_int(expected, op, actual) \
 	v_assert_type("%d", expected, op, actual)
+#define v_assert_uint(expected, op, actual) \
+	v_assert_type("%u", expected, op, actual)
 #define v_assert_long(expected, op, actual) \
 	v_assert_type("%ld", expected, op, actual)
 #define v_assert_size_t(expected, op, actual) \
