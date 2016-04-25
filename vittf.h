@@ -39,11 +39,11 @@
 #define v_assert_int(expected, op, actual) \
 	v_assert_type("%d", expected, op, actual)
 #define v_assert_uint(expected, op, actual) \
-	v_assert_type("%u", expected, op, actual)
+	v_assert_type("%u", (unsigned)expected, op, (unsigned)actual)
 #define v_assert_long(expected, op, actual) \
-	v_assert_type("%ld", expected, op, actual)
+	v_assert_type("%ld", (long)expected, op, (long)actual)
 #define v_assert_size_t(expected, op, actual) \
-	v_assert_type("%zu", expected, op, actual)
+	v_assert_type("%zu", (size_t)expected, op, (size_t)actual)
 #define v_assert_ptr(expected, op, actual) \
 	v_assert_type("%p", (void*)expected, op, (void*)actual)
 
