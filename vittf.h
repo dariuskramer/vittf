@@ -44,6 +44,8 @@
 	v_assert_type("%ld", expected, op, actual)
 #define v_assert_size_t(expected, op, actual) \
 	v_assert_type("%zu", expected, op, actual)
+#define v_assert_ptr(expected, op, actual) \
+	v_assert_type("%p", expected, op, actual)
 
 #define v_assert(expression) \
 	do { \
