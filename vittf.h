@@ -45,7 +45,7 @@
 #define v_assert_size_t(expected, op, actual) \
 	v_assert_type("%zu", expected, op, actual)
 #define v_assert_ptr(expected, op, actual) \
-	v_assert_type("%p", expected, op, actual)
+	v_assert_type("%p", (void*)expected, op, (void*)actual)
 
 #define v_assert(expression) \
 	do { \
