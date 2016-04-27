@@ -6,10 +6,53 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+/*
+ * Colors
+ */
+#define COLOR_RESET	"\x1b[0m"
+#define BG_RED		"\x1b[41m"
+#define FG_BLUE		"\x1b[34m"
+#define FG_GREEN	"\x1b[32m"
+
+/*
+ * Strings
+ */
+#define FAILED_STR		printf(BG_RED "FAILED !!!\t" COLOR_RESET)
+#define FAILED_FILE		printf("FILE(%s)", __FILE__)
+#define FAILED_LINE		printf(" | LINE(%d)", __LINE__)
+#define FAILED_FUNCTION	printf(" | FUNCTION(%s)", __func__)
+#define PRINTF_FAILED	FAILED_STR; FAILED_FILE; FAILED_LINE; FAILED_FUNCTION;
+
+/*
+ * Assertions
+ */
+#define v_assert_type(fmt, expected, op, actual) \
+	do { \
+		if (!(expected op actual)) { \
+			PRINTF_FAILED; \
+			printf("\n\tEXPRESSION\t>>> " #expected " " #op " " #actual); \
+			printf("\n\tVALUES\t\t>>> " fmt " " #op " " fmt, (expected), (actual)); \
+			printf("\n"); \
+			exit(1); \
+		} \
+	} while (0)
+
+#define v_assert_int(expected, op, actual) \
+	v_assert_type("%d", expected, op, actual)
+#define v_assert_uint(expected, op, actual) \
+	v_assert_type("%u", (unsigned)expected, op, (unsigned)actual)
+#define v_assert_long(expected, op, actual) \
+	v_assert_type("%ld", (long)expected, op, (long)actual)
+#define v_assert_size_t(expected, op, actual) \
+	v_assert_type("%zu", (size_t)expected, op, (size_t)actual)
+#define v_assert_ptr(expected, op, actual) \
+	v_assert_type("%p", (void*)expected, op, (void*)actual)
+
 #define v_assert(expression) \
 	do { \
 		if (!(expression)) {\
-			printf("\x1b[41mFailed >>>\x1b[0m FILE(%s), LINE(%d), Expression(%s)\n", __FILE__, __LINE__, #expression); \
+			PRINTF_FAILED; \
+			printf("\n\tExpression(%s)\n", #expression); \
 			exit(1); \
 		} \
 	} while (0)
@@ -17,7 +60,8 @@
 #define v_assert_str(expected, actual) \
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
-			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); \
+			PRINTF_FAILED; \
+			printf("\n\tStrcmp >>>\n\tExpected\t--> [%s]\n\tActual\t\t--> [%s]\n", (expected), (actual)); \
 			exit(1);\
 		}\
 	} while (0)
@@ -25,14 +69,16 @@
 #define v_assert_pass(expression) \
 	do { \
 		if (!(expression)) {\
-			printf("\x1b[41mFailed >>>\x1b[0m FILE(%s), LINE(%d), Expression(%s)\n", __FILE__, __LINE__, #expression); \
+			PRINTF_FAILED; \
+			printf("\n\tExpression(%s)\n", #expression); \
 		} \
 	} while (0)
 
 #define v_assert_str_pass(expected, actual) \
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
-			printf("\x1b[41mFailed>\x1b[0m\tFILE(%s), LINE(%d), Expression(%s != %s)", __FILE__, __LINE__, (expected), (actual)); \
+			PRINTF_FAILED; \
+			printf("\n\tExpression >>> (Expected) %s != %s (Actual)\n", (expected), (actual)); \
 		}\
 	} while (0)
 
@@ -42,6 +88,8 @@
 	(printf("---> Suite %s ✓\n\n", (suite)))
 #define v_full_success(test) \
 	(printf("=========\n\x1b[32mFULL TEST FOR %s ✓\x1b[0m\n", (test)))
+#define VTS v_test_success(__func__)
+#define VSS v_suite_success(__func__)
 
 /*
  * Stdout Redirection
