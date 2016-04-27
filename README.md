@@ -1,7 +1,7 @@
 # Vittf Is a Tiny Test Framework
 
 ## Todo
-* Redirect stderr too, not just stdout
+* (more to come)
 
 ## Assertions
 * `v_assert(expression)`
