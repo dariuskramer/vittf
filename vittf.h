@@ -53,12 +53,14 @@
 #define v_assert_long(expected, op, actual) v_assert_type("%ld", (long)expected, op, (long)actual)
 #define v_assert_size_t(expected, op, actual) v_assert_type("%zu", (size_t)expected, op, (size_t)actual)
 #define v_assert_ptr(expected, op, actual) v_assert_type("%p", (void*)expected, op, (void*)actual)
+#define v_assert_char(expected, op, actual) v_assert_type("%c", expected, op, actual)
 
 #define v_assert_int_pass(expected, op, actual) v_assert_type_pass("%d", expected, op, actual)
 #define v_assert_uint_pass(expected, op, actual) v_assert_type_pass("%u", (unsigned)expected, op, (unsigned)actual)
 #define v_assert_long_pass(expected, op, actual) v_assert_type_pass("%ld", (long)expected, op, (long)actual)
 #define v_assert_size_t_pass(expected, op, actual) v_assert_type_pass("%zu", (size_t)expected, op, (size_t)actual)
 #define v_assert_ptr_pass(expected, op, actual) v_assert_type_pass("%p", (void*)expected, op, (void*)actual)
+#define v_assert_char_pass(expected, op, actual) v_assert_type("%c", expected, op, actual)
 
 #define v_assert(expression) \
 	do { \
