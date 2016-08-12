@@ -87,7 +87,7 @@
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
 			PRINTF_FAILED; \
-			printf("\n\tStrcmp >>>\n\tExpected\t--> [%s]\n\tActual\t\t--> [%s]\n", (expected), (actual)); \
+			printf("\n\tStrcmp >>>\n\tExpected\t--> [%s]\n\tActual\t\t--> [%s]\n", (char*)(expected), (char*)(actual)); \
 			exit(1);\
 		}\
 	} while (0)
@@ -105,7 +105,7 @@
 	do { \
 		if (strcmp((expected), (actual)) != 0) {\
 			PRINTF_FAILED; \
-			printf("\n\tExpression >>> (Expected) %s != %s (Actual)\n", (expected), (actual)); \
+			printf("\n\tExpression >>> (Expected) %s != %s (Actual)\n", (char*)(expected), (char*)(actual)); \
 			return ;\
 		}\
 	} while (0)
@@ -172,6 +172,51 @@ static int	v_read_return;
 		close(v_pipe_redirect[1]); \
 		close(v_stdout_ref); \
 		setlinebuf(stdout); \
+	} while (0)
+
+/*
+ * Stderr Redirection
+ *
+ * - Identique a la redirection de stdout ci-dessus mais pour stderr
+ *		Utilise la meme variable 'v_read_return' que la redirection de stdout
+ *
+ * L'affichage des erreurs a ete supprime afin de ne pas fausser les tests.
+ *
+ */
+
+static int	v_stderr_ref;
+static int	v_stderr_pipe[2];
+
+#define V_REDIRECT_STDERR_SETUP \
+	do { \
+		setvbuf(stderr, NULL, _IONBF, BUFSIZ); \
+		v_stderr_ref = dup(2); \
+		if ((pipe(v_stderr_pipe)) == -1) {\
+			exit(10); \
+		}\
+		if ((dup2(v_stderr_pipe[1], 2)) == -1) {\
+			exit(11); \
+		}\
+	} while (0)
+
+#define V_REDIRECT_STDERR_READ(v_buffer, v_buffer_size) \
+	do { \
+		v_read_return = read(v_stderr_pipe[0], v_buffer, v_buffer_size - 1); \
+		if (v_read_return == -1) {\
+			exit(12); \
+		}\
+		v_buffer[v_read_return] = '\0';\
+	} while (0)
+
+#define V_REDIRECT_STDERR_TEARDOWN \
+	do { \
+		if ((dup2(v_stderr_ref, 2)) == -1) {\
+			exit(13); \
+		}\
+		close(v_stderr_pipe[0]); \
+		close(v_stderr_pipe[1]); \
+		close(v_stderr_ref); \
+		setlinebuf(stderr); \
 	} while (0)
 
 #endif
