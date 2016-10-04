@@ -60,6 +60,8 @@
 	v_assert_type("%p", (void*)(expected), op, (void*)(actual))
 #define v_assert_char(expected, op, actual) \
 	v_assert_type("%c", (char)expected, op, (char)actual)
+#define v_assert_uintptr(expected, op, actual) \
+	v_assert_type("%tx", (uintptr_t)expected, op, (uintptr_t)actual)
 
 #define v_assert_int_pass(expected, op, actual) \
 	v_assert_type_pass("%d", (int)expected, op, (int)actual)
@@ -72,7 +74,9 @@
 #define v_assert_ptr_pass(expected, op, actual) \
 	v_assert_type_pass("%p", (void*)(expected), op, (void*)(actual))
 #define v_assert_char_pass(expected, op, actual) \
-	v_assert_type("%c", (char)expected, op, (char)actual)
+	v_assert_type_pass("%c", (char)expected, op, (char)actual)
+#define v_assert_uintptr_pass(expected, op, actual) \
+	v_assert_type_pass("%tx", (uintptr_t)expected, op, (uintptr_t)actual)
 
 #define v_assert(expression) \
 	do { \
