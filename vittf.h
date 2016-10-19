@@ -134,7 +134,7 @@ static void	v_redirect_error(char *msg)
 	exit(1);
 }
 
-void	v_redirect_setup(int fd)
+inline static void	v_redirect_setup(int fd)
 {
 	v_fd_ref = fd;
 
@@ -151,7 +151,7 @@ void	v_redirect_setup(int fd)
 		v_redirect_error("setup dup2 error");
 }
 
-ssize_t	v_redirect_read(char *buffer, size_t size)
+inline static ssize_t	v_redirect_read(char *buffer, size_t size)
 {
 	ssize_t	ret;
 
@@ -162,7 +162,7 @@ ssize_t	v_redirect_read(char *buffer, size_t size)
 	return (ret);
 }
 
-void	v_redirect_teardown(void)
+inline static void	v_redirect_teardown(void)
 {
 	if ((dup2(v_fd_pipe, v_fd_ref)) == -1)
 		v_redirect_error("teardown dup2 error");
