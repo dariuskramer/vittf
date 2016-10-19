@@ -123,104 +123,58 @@
 #define VTS v_test_success(__func__)
 #define VSS v_suite_success(__func__)
 
-/*
- * Stdout Redirection
- *
- * - Créer une référence supplémentaire vers le FILE de stdout
- *		Les objets pointés par les référence ne sont pas distinguable
- *
- * [0] => connect to the read end of the pipe (output)
- * [1] => connect to the write end of the pipe (input)
- * Les données écrite dans [1] peuvent etre lues dans [0]
- * Le pipe est actif tant que les 2 fds ne sont pas clos
- *
- * Le fd 1 étant déjà occupé, dup2() le clos.
- * Ensuite dup2() duplique la référence vers l'input du pipe en utilisant
- * le second parametre envoyé, a savoir 1
- */
-static int	v_stdout_ref;
 static int	v_pipe_redirect[2];
-static int	v_read_return;
+static int	v_fd_ref;
+static int	v_fd_pipe;
+static FILE *v_redirect_stream;
 
-#define V_REDIRECT_STDOUT_SETUP \
-	do { \
-		setvbuf(stdout, NULL, _IONBF, BUFSIZ); \
-		v_stdout_ref = dup(1); \
-		if ((pipe(v_pipe_redirect)) == -1) {\
-			fprintf(stderr, "Pipe() error !\n"); \
-			exit(10); \
-		}\
-		if ((dup2(v_pipe_redirect[1], 1)) == -1) {\
-			fprintf(stderr, "Dup2() error !\n"); \
-			exit(11); \
-		}\
-	} while (0)
+static void	v_redirect_error(char *msg)
+{
+	fprintf(stderr, "%s", msg);
+	exit(1);
+}
 
-#define V_REDIRECT_STDOUT_READ(v_buffer, v_buffer_size) \
-	do { \
-		v_read_return = read(v_pipe_redirect[0], v_buffer, v_buffer_size - 1); \
-		if (v_read_return == -1) {\
-			fprintf(stderr, "Read() error !\n"); \
-			exit(12); \
-		}\
-		v_buffer[v_read_return] = '\0';\
-	} while (0)
+void	v_redirect_setup(int fd)
+{
+	v_fd_ref = fd;
 
-#define V_REDIRECT_STDOUT_TEARDOWN \
-	do { \
-		if ((dup2(v_stdout_ref, 1)) == -1) {\
-			fprintf(stderr, "Dup2() error !\n"); \
-			exit(13); \
-		}\
-		close(v_pipe_redirect[0]); \
-		close(v_pipe_redirect[1]); \
-		close(v_stdout_ref); \
-		setlinebuf(stdout); \
-	} while (0)
+	// do not buffer line
+	if (fd == 1)
+		setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+	else if (fd == 2)
+		setvbuf(stderr, NULL, _IONBF, BUFSIZ);
 
-/*
- * Stderr Redirection
- *
- * - Identique a la redirection de stdout ci-dessus mais pour stderr
- *		Utilise la meme variable 'v_read_return' que la redirection de stdout
- *
- * L'affichage des erreurs a ete supprime afin de ne pas fausser les tests.
- *
- */
+	v_fd_pipe = dup(fd);
+	if (pipe(v_pipe_redirect) == -1)
+		v_redirect_error("setup pipe error");
+	if (dup2(v_pipe_redirect[1], fd) == -1)
+		v_redirect_error("setup dup2 error");
+}
 
-static int	v_stderr_ref;
-static int	v_stderr_pipe[2];
+ssize_t	v_redirect_read(char *buffer, size_t size)
+{
+	ssize_t	ret;
 
-#define V_REDIRECT_STDERR_SETUP \
-	do { \
-		setvbuf(stderr, NULL, _IONBF, BUFSIZ); \
-		v_stderr_ref = dup(2); \
-		if ((pipe(v_stderr_pipe)) == -1) {\
-			exit(10); \
-		}\
-		if ((dup2(v_stderr_pipe[1], 2)) == -1) {\
-			exit(11); \
-		}\
-	} while (0)
+	ret = read(v_pipe_redirect[0], buffer, size - 1);
+	if (ret == -1)
+		v_redirect_error("read error");
+	buffer[ret] = '\0';
+	return (ret);
+}
 
-#define V_REDIRECT_STDERR_READ(v_buffer, v_buffer_size) \
-	do { \
-		v_read_return = read(v_stderr_pipe[0], v_buffer, v_buffer_size - 1); \
-		if (v_read_return == -1) {\
-			exit(12); \
-		}\
-		v_buffer[v_read_return] = '\0';\
-	} while (0)
+void	v_redirect_teardown(void)
+{
+	if ((dup2(v_fd_pipe, v_fd_ref)) == -1)
+		v_redirect_error("teardown dup2 error");
+	close(v_pipe_redirect[0]);
+	close(v_pipe_redirect[1]);
+	close(v_fd_pipe);
 
-#define V_REDIRECT_STDERR_TEARDOWN \
-	do { \
-		if ((dup2(v_stderr_ref, 2)) == -1) {\
-			exit(13); \
-		}\
-		close(v_stderr_pipe[0]); \
-		close(v_stderr_pipe[1]); \
-		close(v_stderr_ref); \
-		setlinebuf(stderr); \
-	} while (0)
+	// restore buffering line
+	if (v_fd_ref == 1)
+		setlinebuf(stdout);
+	else if (v_fd_ref == 2)
+		setlinebuf(stderr);
+}
 
 #endif
