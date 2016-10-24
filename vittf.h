@@ -172,9 +172,9 @@ inline static void	v_redirect_teardown(void)
 
 	// restore buffering line
 	if (v_fd_ref == 1)
-		setlinebuf(stdout);
+		setvbuf(stdout, (char *)NULL, _IOLBF, 0);
 	else if (v_fd_ref == 2)
-		setlinebuf(stderr);
+		setvbuf(stderr, (char *)NULL, _IOLBF, 0);
 }
 
 #endif
